@@ -98,6 +98,21 @@ function [mi] = vehicle_mass_analysis(stages, Isp, alpha, pi_e, DDeF_ratio, eta_
     rf = (6378+251.46)*1e3; % (m)
     go = 9.81; % (m/s^2)
 
+    %Ensure that alpha values sum to 1
+    alpha_sum = 0;
+    for i = 1:length(stages)
+        if upper(stages(i)) == "ROCKET"
+            alpha_sum = alpha_sum + sqrt(alpha(i));
+        elseif upper(stages(i)) == "AIR BREATHING"
+            alpha_sum = alpha_sum + alpha(i);
+        else
+            error("Non-Supported Stage Identifier Passed. Please pass either ROCKET or AIR BREATHING keys.");
+        end
+    end
+    if alpha_sum ~= 1
+        error("Alpha values do not sum to 1 (considering for rocket they should be squared). Please check these inputs and try again.")
+    end
+
     %Define memory space for our results to be stored for each stage
     lambda = zeros(length(stages));
     gamma = zeros(length(stages));
@@ -112,7 +127,7 @@ function [mi] = vehicle_mass_analysis(stages, Isp, alpha, pi_e, DDeF_ratio, eta_
             lambda(i) = (go*ro*(1-(1/2)*(ro/rf)))/(eta_o(i)*hpr(i)*(1-DDeF_ratio(i)));
             gamma(i) = 1/(exp(-alpha(i)*lambda(i))-pi_e(i)); 
         else
-            disp("Non-Supported Stage Identifier Passed. Please pass either ROCKET or AIR BREATHING keys.");
+            error("Non-Supported Stage Identifier Passed. Please pass either ROCKET or AIR BREATHING keys.");
         end
     end
 
