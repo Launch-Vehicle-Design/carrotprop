@@ -7,7 +7,77 @@ clc;
 set(groot,'defaultAxesFontSize',14);
 set(groot, 'DefaultLineLineWidth', 2);
 
-%Define our inputs
+%Define our inputs for the Rocket -> Air Breathing -> Liquid Rocket Case
+stages = ["Rocket", "Air Breathing", "Rocket"];
+Isp = [300, -1, 425];
+alpha = [1/9, 1/3, 1/9];
+pi_e = [0.12, 0.12, 0.12];
+DDeF_ratio = [0, 0, 0];
+eta_o = [-1, 0.5, -1];
+hpr = [-1, 120000e3, -1];
+mp = 45.4;
+
+%Run our analysis script
+mi = vehicle_mass_analysis(stages, Isp, alpha, pi_e, DDeF_ratio, eta_o, hpr, mp);
+fprintf("Initial Mass Required for Solid Rocket -> Air Breathing -> Liquid Rocket is: %4.0f kg \n", mi);
+
+%Define our inputs for the Rocket -> Air Breathing -> Rocket Case
+stages = ["Rocket", "Air Breathing", "Rocket"];
+Isp = [300, -1, 300];
+alpha = [1/9, 1/3, 1/9];
+pi_e = [0.12, 0.12, 0.12];
+DDeF_ratio = [0, 0, 0];
+eta_o = [-1, 0.5, -1];
+hpr = [-1, 120000e3, -1];
+mp = 45.4;
+
+%Run our analysis script
+mi = vehicle_mass_analysis(stages, Isp, alpha, pi_e, DDeF_ratio, eta_o, hpr, mp);
+fprintf("Initial Mass Required for Solid Rocket -> Air Breathing -> Solid Rocket is: %4.0f kg \n", mi);
+
+%Define our inputs for the Rocket -> Rocket -> Rocket Case
+stages = ["Rocket", "Rocket", "Rocket"];
+Isp = [300, 300, 300];
+alpha = [1/9, 1/9, 1/9];
+pi_e = [0.12, 0.12, 0.12];
+DDeF_ratio = [0, 0, 0];
+eta_o = [-1, -1, -1];
+hpr = [-1, -1, -1];
+mp = 45.4;
+
+%Run our analysis script
+mi = vehicle_mass_analysis(stages, Isp, alpha, pi_e, DDeF_ratio, eta_o, hpr, mp);
+fprintf("Initial Mass Required for Solid Rocket -> Solid Rocket -> Solid Rocket is: %4.0f kg \n", mi);
+
+%Define our inputs for the Rocket -> Rocket -> Liquid
+stages = ["Rocket", "Rocket", "Rocket"];
+Isp = [300, 300, 425];
+alpha = [1/9, 1/9, 1/9];
+pi_e = [0.12, 0.12, 0.12];
+DDeF_ratio = [0, 0, 0];
+eta_o = [-1, -1, -1];
+hpr = [-1, -1, -1];
+mp = 45.4;
+
+%Run our analysis script
+mi = vehicle_mass_analysis(stages, Isp, alpha, pi_e, DDeF_ratio, eta_o, hpr, mp);
+fprintf("Initial Mass Required for Solid Rocket -> Solid Rocket -> Liquid Rocket is: %4.0f kg \n", mi);
+
+%Define our inputs for the Rocket -> Rocket Case
+stages = ["Rocket", "Rocket"];
+Isp = [300, 300];
+alpha = [1/4, 1/4];
+pi_e = [0.12, 0.12];
+DDeF_ratio = [0, 0];
+eta_o = [-1, -1];
+hpr = [-1, -1];
+mp = 45.4;
+
+%Run our analysis script
+mi = vehicle_mass_analysis(stages, Isp, alpha, pi_e, DDeF_ratio, eta_o, hpr, mp);
+fprintf("Initial Mass Required for Solid Rocket -> Solid Rocket is: %4.0f kg \n", mi);
+
+%Define our inputs for the Air Breathing -> Rocket Case
 stages = ["Air Breathing", "Rocket"];
 Isp = [-1, 300];
 alpha = [1/2, 1/4];
@@ -18,7 +88,8 @@ hpr = [120000e3, -1];
 mp = 45.4;
 
 %Run our analysis script
-disp(vehicle_mass_analysis(stages, Isp, alpha, pi_e, DDeF_ratio, eta_o, hpr, mp));
+mi = vehicle_mass_analysis(stages, Isp, alpha, pi_e, DDeF_ratio, eta_o, hpr, mp);
+fprintf("Initial Mass Required for Airbreathing -> Solid Rocket is: %4.0f kg \n", mi);
 
 function [mi] = vehicle_mass_analysis(stages, Isp, alpha, pi_e, DDeF_ratio, eta_o, hpr, mp)
     %Define basic givens for the conceptual problem
