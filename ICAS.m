@@ -14,10 +14,10 @@ v_vehicle = 7.43224; % m^3 (80 ft^2)
 stages = ["Rocket", "Air Breathing", "Rocket"];
 Isp = [300, -1, 425];
 alpha = [1/9, 1/3, 1/9];
-pi_e = [0.1, 0.1, 0.1];
-DDeF_ratio = [0, 0, 0];
+pi_e = [0.15, 0.15, 0.15];
+DDeF_ratio = [0.05, 0.05, 0.05];
 eta_o = [-1, 0.5, -1];
-hpr = [-1, 48000e3, -1];
+hpr = [-1, 42000e3, -1];
 mp = 45.4;
 
 %Run our analysis script
@@ -28,10 +28,10 @@ fprintf("Initial Mass Required for Solid Rocket -> Air Breathing -> Liquid Rocke
 stages = ["Rocket", "Air Breathing", "Rocket"];
 Isp = [300, -1, 300];
 alpha = [1/9, 1/3, 1/9];
-pi_e = [0.1, 0.1, 0.1];
-DDeF_ratio = [0, 0, 0];
+pi_e = [0.15, 0.15, 0.15];
+DDeF_ratio = [0.05, 0.05, 0.05];
 eta_o = [-1, 0.5, -1];
-hpr = [-1, 48000e3, -1];
+hpr = [-1, 42000e3, -1];
 mp = 45.4;
 
 %Run our analysis script
@@ -42,8 +42,8 @@ fprintf("Initial Mass Required for Solid Rocket -> Air Breathing -> Solid Rocket
 stages = ["Rocket", "Rocket", "Rocket"];
 Isp = [320, 320, 320];
 alpha = [1/9, 1/9, 1/9];
-pi_e = [0.1, 0.1, 0.1];
-DDeF_ratio = [0, 0, 0];
+pi_e = [0.15, 0.15, 0.15];
+DDeF_ratio = [0.05, 0.05, 0.05];
 eta_o = [-1, -1, -1];
 hpr = [-1, -1, -1];
 mp = 45.4;
@@ -62,8 +62,8 @@ fprintf("Percent of Vehicle Volume: %2.2f percent \n\n", (v_required/v_vehicle)*
 stages = ["Rocket", "Rocket", "Rocket"];
 Isp = [300, 300, 425];
 alpha = [1/9, 1/9, 1/9];
-pi_e = [0.1, 0.1, 0.1];
-DDeF_ratio = [0, 0, 0];
+pi_e = [0.15, 0.15, 0.15];
+DDeF_ratio = [0.05, 0.05, 0.05];
 eta_o = [-1, -1, -1];
 hpr = [-1, -1, -1];
 mp = 45.4;
@@ -76,8 +76,8 @@ fprintf("Initial Mass Required for Solid Rocket -> Solid Rocket -> Liquid Rocket
 stages = ["Rocket", "Rocket"];
 Isp = [300, 300];
 alpha = [1/4, 1/4];
-pi_e = [0.1, 0.1];
-DDeF_ratio = [0, 0];
+pi_e = [0.15, 0.15];
+DDeF_ratio = [0.05, 0.05];
 eta_o = [-1, -1];
 hpr = [-1, -1];
 mp = 45.4;
@@ -90,10 +90,10 @@ fprintf("Initial Mass Required for Solid Rocket -> Solid Rocket is: %4.0f kg \n"
 stages = ["Air Breathing", "Rocket"];
 Isp = [-1, 300];
 alpha = [1/2, 1/4];
-pi_e = [0.1, 0.1];
-DDeF_ratio = [0, 0];
+pi_e = [0.15, 0.15];
+DDeF_ratio = [0.05, 0.05];
 eta_o = [0.5, -1];
-hpr = [48000e3, -1];
+hpr = [42000e3, -1];
 mp = 45.4;
 
 %Run our analysis script
@@ -104,10 +104,10 @@ fprintf("Initial Mass Required for Airbreathing -> Solid Rocket is: %4.0f kg \n"
 stages = ["Air Breathing", "Rocket"];
 Isp = [-1, 425];
 alpha = [1/2, 1/4];
-pi_e = [0.1, 0.1];
-DDeF_ratio = [0, 0];
-eta_o = [0.5, -1];
-hpr = [120000e3, -1];
+pi_e = [0.15, 0.15];
+DDeF_ratio = [0.05, 0.05];
+eta_o = [0.4, -1];
+hpr = [42000e3, -1];
 mp = 45.4;
 
 %Run our analysis script
