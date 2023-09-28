@@ -7,14 +7,17 @@ clc;
 set(groot,'defaultAxesFontSize',14);
 set(groot, 'DefaultLineLineWidth', 2);
 
+%Problem constants
+v_vehicle = 7.43224; % m^3 (80 ft^2)
+
 %Define our inputs for the Rocket -> Air Breathing -> Liquid Rocket Case
 stages = ["Rocket", "Air Breathing", "Rocket"];
 Isp = [300, -1, 425];
 alpha = [1/9, 1/3, 1/9];
-pi_e = [0.12, 0.12, 0.12];
+pi_e = [0.1, 0.1, 0.1];
 DDeF_ratio = [0, 0, 0];
 eta_o = [-1, 0.5, -1];
-hpr = [-1, 120000e3, -1];
+hpr = [-1, 48000e3, -1];
 mp = 45.4;
 
 %Run our analysis script
@@ -25,10 +28,10 @@ fprintf("Initial Mass Required for Solid Rocket -> Air Breathing -> Liquid Rocke
 stages = ["Rocket", "Air Breathing", "Rocket"];
 Isp = [300, -1, 300];
 alpha = [1/9, 1/3, 1/9];
-pi_e = [0.12, 0.12, 0.12];
+pi_e = [0.1, 0.1, 0.1];
 DDeF_ratio = [0, 0, 0];
 eta_o = [-1, 0.5, -1];
-hpr = [-1, 120000e3, -1];
+hpr = [-1, 48000e3, -1];
 mp = 45.4;
 
 %Run our analysis script
@@ -37,23 +40,29 @@ fprintf("Initial Mass Required for Solid Rocket -> Air Breathing -> Solid Rocket
 
 %Define our inputs for the Rocket -> Rocket -> Rocket Case
 stages = ["Rocket", "Rocket", "Rocket"];
-Isp = [300, 300, 300];
+Isp = [320, 320, 320];
 alpha = [1/9, 1/9, 1/9];
-pi_e = [0.12, 0.12, 0.12];
+pi_e = [0.1, 0.1, 0.1];
 DDeF_ratio = [0, 0, 0];
 eta_o = [-1, -1, -1];
 hpr = [-1, -1, -1];
 mp = 45.4;
+rho = 2004; %CL20 Density (kg/m^3)
 
 %Run our analysis script
 mi = vehicle_mass_analysis(stages, Isp, alpha, pi_e, DDeF_ratio, eta_o, hpr, mp);
+mf = mi - mi*pi_e(1) - mp;
+v_required = mf/rho; % Required Volume
 fprintf("Initial Mass Required for Solid Rocket -> Solid Rocket -> Solid Rocket is: %4.0f kg \n", mi);
+fprintf("Required fuel mass (mf): %4.0f kg \n", mf);
+fprintf("Required volume (V): %1.3f m^3 \n", v_required);
+fprintf("Percent of Vehicle Volume: %2.2f percent \n\n", (v_required/v_vehicle)*100);
 
 %Define our inputs for the Rocket -> Rocket -> Liquid
 stages = ["Rocket", "Rocket", "Rocket"];
 Isp = [300, 300, 425];
 alpha = [1/9, 1/9, 1/9];
-pi_e = [0.12, 0.12, 0.12];
+pi_e = [0.1, 0.1, 0.1];
 DDeF_ratio = [0, 0, 0];
 eta_o = [-1, -1, -1];
 hpr = [-1, -1, -1];
@@ -67,7 +76,7 @@ fprintf("Initial Mass Required for Solid Rocket -> Solid Rocket -> Liquid Rocket
 stages = ["Rocket", "Rocket"];
 Isp = [300, 300];
 alpha = [1/4, 1/4];
-pi_e = [0.12, 0.12];
+pi_e = [0.1, 0.1];
 DDeF_ratio = [0, 0];
 eta_o = [-1, -1];
 hpr = [-1, -1];
@@ -81,7 +90,21 @@ fprintf("Initial Mass Required for Solid Rocket -> Solid Rocket is: %4.0f kg \n"
 stages = ["Air Breathing", "Rocket"];
 Isp = [-1, 300];
 alpha = [1/2, 1/4];
-pi_e = [0.12, 0.12];
+pi_e = [0.1, 0.1];
+DDeF_ratio = [0, 0];
+eta_o = [0.5, -1];
+hpr = [48000e3, -1];
+mp = 45.4;
+
+%Run our analysis script
+mi = vehicle_mass_analysis(stages, Isp, alpha, pi_e, DDeF_ratio, eta_o, hpr, mp);
+fprintf("Initial Mass Required for Airbreathing -> Solid Rocket is: %4.0f kg \n", mi);
+
+%Define our inputs for the Air Breathing -> Liquid Rocket Case
+stages = ["Air Breathing", "Rocket"];
+Isp = [-1, 425];
+alpha = [1/2, 1/4];
+pi_e = [0.1, 0.1];
 DDeF_ratio = [0, 0];
 eta_o = [0.5, -1];
 hpr = [120000e3, -1];
@@ -89,7 +112,7 @@ mp = 45.4;
 
 %Run our analysis script
 mi = vehicle_mass_analysis(stages, Isp, alpha, pi_e, DDeF_ratio, eta_o, hpr, mp);
-fprintf("Initial Mass Required for Airbreathing -> Solid Rocket is: %4.0f kg \n", mi);
+fprintf("Initial Mass Required for Airbreathing -> Liquid Rocket is: %4.0f kg \n", mi);
 
 function [mi] = vehicle_mass_analysis(stages, Isp, alpha, pi_e, DDeF_ratio, eta_o, hpr, mp)
     %Define basic givens for the conceptual problem
@@ -121,7 +144,7 @@ function [mi] = vehicle_mass_analysis(stages, Isp, alpha, pi_e, DDeF_ratio, eta_
     for i = 1:length(stages)
         %Compute results for each stage
         if upper(stages(i)) == "ROCKET"
-            lambda(i) = sqrt(go*ro)/(go*Isp(i)*(1-DDeF_ratio(i)));
+            lambda(i) = (sqrt(go*ro))/(go*Isp(i)*(1-DDeF_ratio(i)));
             gamma(i) = 1/(exp(-sqrt(alpha(i))*lambda(i))-pi_e(i));
         elseif upper(stages(i)) == "AIR BREATHING"
             lambda(i) = (go*ro*(1-(1/2)*(ro/rf)))/(eta_o(i)*hpr(i)*(1-DDeF_ratio(i)));
