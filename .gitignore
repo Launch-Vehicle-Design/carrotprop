@@ -162,3 +162,6 @@ cython_debug/
 # MATLAB Related Files
 *.asv
 .DS_Store
+
+#Output files
+out/
