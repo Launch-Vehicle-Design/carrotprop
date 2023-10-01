@@ -18,7 +18,7 @@ Weight = 2267.962*9.81; % (N)
 
 %Liquid Engine (N2H4 and N2O4)
 %Chamber Pressure: 5000 psia
-Pc = 34.47e7; % (Pa)
+Pc = 34.47e6; % (Pa)
 Rt = 0.0254; % meters (1 inch)
 Astar = pi*Rt^2; % Throat Area (m^2)
 R_curve = 0.382*Rt; % meters
