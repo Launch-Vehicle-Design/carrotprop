@@ -5,8 +5,14 @@ clc;
 clear;
 
 %Figure formatting preferences
-set(groot,'defaultAxesFontSize',14);
-set(groot, 'DefaultLineLineWidth', 2);
+set(0,'DefaultLineLineWidth',1.5);
+set(0,'DefaultLineMarkerSize',14);
+set(0,'DefaultAxesFontSize',14);
+set(0,'DefaultFigureColor',[1,1,1]);
+set(0,'DefaultTextFontSize',14);
+set(0,'DefaultTextInterpreter','latex');
+set(0,'DefaultTextFontName','Times-Roman');
+set(0,'DefaultAxesFontName','Times-Roman');
 
 %Define problem wide variables
 H_release = 12192; % (m)
@@ -17,6 +23,24 @@ g = 9.81; % m/s^2
 
 %Run CEA multiple times (currently the web CEARUN version) in order to
 %determine rough lengths for our nozzles
+mode = "CL20";
+cea_data = -1; % Default instantiation
+if(mode == "File")
+    cea_data = readtable("data/CEA/Liquid/rppero_data.txt");
+    cea_data.isp = cea_data.isp*1.2/9.81; % Convert to s
+    cea_data.ivac = cea_data.ivac*1.2/9.81; % Convert to s
+else
+    ceam_out = -1;
+    if(mode == "CL20")
+        ceam_out = CEA('reac','name','CL20','C', 6.28, 'H', 6.20, 'N', 12.55, 'O', 12, 'h,Kj/mol', 581.87,'wt%',100.0,'t(k)',298.15,'prob','rkt','p,psia',2900,'supar',5,10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,'outp','massf','transport','mks','end');
+    end
+    cea_data = array2table(squeeze([ceam_out.output.froz.aeat(3:length(ceam_out.output.froz.aeat)), ceam_out.output.froz.pressure(3:length(ceam_out.output.froz.pressure)), ...
+                            ceam_out.output.froz.density(3:length(ceam_out.output.froz.density)), ceam_out.output.froz.mach(3:length(ceam_out.output.froz.mach)), ...
+                            ceam_out.output.froz.sonvel(3:length(ceam_out.output.froz.sonvel)), ceam_out.output.froz.isp(3:length(ceam_out.output.froz.isp)), ...
+                            ceam_out.output.froz.cf(3:length(ceam_out.output.froz.cf)), ceam_out.output.froz.isp_vac(3:length(ceam_out.output.froz.isp_vac))])');
+    cea_data.Properties.VariableNames = ["aeat", "p", "rho", "mach", "son", "isp", "cf", "ivac"];
+end
+cea_data.p = cea_data.p*1e5; % Convert to Pascals
 
 %Liquid Engine (N2H4 and N2O4)
 %Chamber Pressure: 10 MPa
@@ -24,14 +48,10 @@ Pc = 20e6; % (Pa)
 Rt = 0.02286; % meters (3/4 inch)
 Astar = pi*Rt^2; % Throat Area (m^2)
 R_curve = 0.382*Rt; % meters
-cea_data = readtable("data/CEA/Liquid/rppero_data.txt");
-cea_data.p = cea_data.p*1e5; % Convert to Pascals
-cea_data.isp = cea_data.isp*1.2/9.81; % Convert to s
-cea_data.ivac = cea_data.ivac*1.2/9.81; % Convert to s
 Thrust = cea_data.cf*Pc*Astar*1.2; % (N)
 length_vals = (Rt*(sqrt(cea_data.aeat)-1)+R_curve*((1/cosd(15))-1))/tand(15);
 %Determine area ratios that are optimal for specific Pa values
-Isp_40 = (Astar*(cea_data.rho.*cea_data.aeat.*(cea_data.mach.*cea_data.son).^2 + cea_data.aeat.*(cea_data.p-Pa)))./(Astar.*cea_data.rho.*cea_data.aeat.*(cea_data.mach.*cea_data.son).*g)*1.2;
+Isp_40 = (Astar*(cea_data.rho.*cea_data.aeat.*(cea_data.mach.*cea_data.son).^2 + cea_data.aeat.*(cea_data.p-Pa)))./(Astar.*cea_data.rho.*cea_data.aeat.*(cea_data.mach.*cea_data.son).*g);
 Isp_eff = 0.95*(Isp_40 + (2/3)*(cea_data.ivac - Isp_40));
 Isp_percent = 0.9:0.0001:1;
 epsilon = zeros([1,length(Isp_percent)]);
