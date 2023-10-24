@@ -23,7 +23,7 @@ Ru = 8314; % (J/kgK)
 
 %Run CEA multiple times (currently the web CEARUN version) in order to
 %determine rough lengths for our nozzles
-mode = "RDRE";
+mode = "CL20";
 cea_data = -1; % Default instantiation
 if(mode == "File")
     cea_data = readtable("data/CEA/Liquid/rppero_data.txt");
@@ -32,7 +32,7 @@ if(mode == "File")
 else
     ceam_out = -1;
     if(mode == "CL20")
-        ceam_out = CEA('reac','name','CL20','C', 6.28, 'H', 6.20, 'N', 12.55, 'O', 12, 'h,Kj/mol', 581.87,'wt%',100.0,'t(k)',298.15,'prob','rkt','p,psia',2900,'supar',5,10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,'outp','massf','transport','mks','end');
+        ceam_out = CEA('reac','name','CL20','C', 6.28, 'H', 6.20, 'N', 12.55, 'O', 12, 'h,Kj/mol', 581.87,'wt%', 88.0, 't(k)',298.15, 'name','HTPB','C', 213.8, 'H', 323, 'O', 4.6, 'N', 2.3, 'h,Kj/mol', 342.0, 'wt%', 12.0, 't(k)', 298.15, 'prob','rkt','p,psia',2900,'supar',5,10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,'outp','massf','transport','mks','end');
         cea_data = array2table(squeeze([ceam_out.output.froz.aeat(3:length(ceam_out.output.froz.aeat)), ceam_out.output.froz.pressure(3:length(ceam_out.output.froz.pressure)), ...
                             ceam_out.output.froz.density(3:length(ceam_out.output.froz.density)), ceam_out.output.froz.mach(3:length(ceam_out.output.froz.mach)), ...
                             ceam_out.output.froz.sonvel(3:length(ceam_out.output.froz.sonvel)), ceam_out.output.froz.isp(3:length(ceam_out.output.froz.isp)), ...
@@ -41,7 +41,7 @@ else
     elseif(mode == "RDRE")
         %Performance calculations based on the method outlined in the
         %following paper: https://arc.aiaa.org/doi/epdf/10.2514/1.A34313
-        ceam_out = CEA('reac','name','H2','moles',8.000,'name','O2','moles',1.0000,'prob','det','t,k',500.,'p,atm',50.0,'output','transport','end','screen');
+        ceam_out = CEA('reac','name','JP-4', 'moles', 8.0000, 'name','N2O4','moles',1.43565,'prob','det','t,k',550.,'p,atm',50.0,'output','transport','end','screen');
         tc = 120/1e6; % Detonation Cycle Time
         aeat = 5;
         t = 0:1e-6:tc;
@@ -100,7 +100,7 @@ cea_data.p = cea_data.p*1e5; % Convert to Pascals
 
 %Chamber Pressure: 10 MPa
 Pc = 20e6; % (Pa)
-Rt = 0.0254; % meters (3/4 inch)
+Rt = 0.0185; % meters (approx. 0.72 inches)
 Astar = pi*Rt^2; % Throat Area (m^2)
 R_curve = 0.382*Rt; % meters
 Thrust = cea_data.cf*Pc*Astar; % (N)
@@ -128,7 +128,7 @@ fprintf("Nozzle length for 95 Percent Efficiency: %0.3f m. Effective Isp at this
 fprintf("Nozzle Geometry Points -> Rt: %0.4f m | Re: %1.4f m\n", [Rt, sqrt(epsilon(find(Isp_percent==0.98))*Rt^2)]);
 fprintf("Nozzle length for 98 Percent Efficiency: %0.3f m. Effective Isp at this value is: %0.3f s \n\n", [length_trunc(find(Isp_percent==0.98)), 0.98*max(Isp_eff)]);
 fprintf("Nozzle Geometry Points -> Rt: %0.4f m | Re: %1.4f m\n", [Rt, sqrt(epsilon(find(Isp_percent==0.995))*Rt^2)]);
-fprintf("Nozzle length for 99.5 Percent Efficiency: %0.3f m. Effective Isp at this value is: %0.3f s \n", [length_trunc(find(Isp_percent==0.995)), 0.995*max(Isp_eff)]);
+fprintf("Nozzle length for 99.5 Percent Efficiency: %0.3f m. Effective Isp at this value is: %0.3f s \n\n", [length_trunc(find(Isp_percent==0.995)), 0.995*max(Isp_eff)]);
 fprintf("Nozzle Geometry Points -> Rt: %0.4f m | Re: %1.4f m\n", [Rt, sqrt(epsilon(find(Isp_percent==1))*Rt^2)]);
 fprintf("Nozzle length for 100 Percent Efficiency: %0.3f m. Effective Isp at this value is: %0.3f s \n", [length_trunc(find(Isp_percent==1)), 1*max(Isp_eff)]);
 
