@@ -24,6 +24,7 @@ Ru = 8314; % (J/kgK)
 %Run CEA multiple times (currently the web CEARUN version) in order to
 %determine rough lengths for our nozzles
 mode = "CL20";
+binder = "GAP";
 cea_data = -1; % Default instantiation
 if(mode == "File")
     cea_data = readtable("data/CEA/Liquid/rppero_data.txt");
@@ -32,7 +33,11 @@ if(mode == "File")
 else
     ceam_out = -1;
     if(mode == "CL20")
-        ceam_out = CEA('reac','name','CL20','C', 6.28, 'H', 6.20, 'N', 12.55, 'O', 12, 'h,Kj/mol', 581.87,'wt%', 88.0, 't(k)',298.15, 'name','HTPB','C', 213.8, 'H', 323, 'O', 4.6, 'N', 2.3, 'h,Kj/mol', 342.0, 'wt%', 12.0, 't(k)', 298.15, 'prob','rkt','p,psia',2900,'supar',5,10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,'outp','massf','transport','mks','end');
+        if binder == "HTPB"
+            ceam_out = CEA('reac','name','CL20','C', 6.28, 'H', 6.20, 'N', 12.55, 'O', 12, 'h,Kj/mol', 581.87,'wt%', 88.0, 't(k)',298.15, 'name','HTPB','C', 213.8, 'H', 323, 'O', 4.6, 'N', 2.3, 'h,Kj/mol', 342.0, 'wt%', 12.0, 't(k)', 298.15, 'prob','rkt','p,psia',2900,'supar',5,10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,'outp','massf','transport','mks','end');
+        elseif binder == "GAP"
+            ceam_out = CEA('reac','name','CL20','C', 6.28, 'H', 6.20, 'N', 12.55, 'O', 12, 'h,Kj/mol', 581.87,'wt%', 88.0, 't(k)',298.15, 'name','GAP','C', 388, 'H', 330, 'O', 4, 'N', 192, 'h,Kj/mol', 6060.0, 'wt%', 12.0, 't(k)', 298.15, 'prob','rkt','p,psia',2900,'supar',5,10,15,20,25,30,35,40,45,50,55,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,210,'outp','massf','transport','mks','end');
+        end
         cea_data = array2table(squeeze([ceam_out.output.froz.aeat(3:length(ceam_out.output.froz.aeat)), ceam_out.output.froz.pressure(3:length(ceam_out.output.froz.pressure)), ...
                             ceam_out.output.froz.density(3:length(ceam_out.output.froz.density)), ceam_out.output.froz.mach(3:length(ceam_out.output.froz.mach)), ...
                             ceam_out.output.froz.sonvel(3:length(ceam_out.output.froz.sonvel)), ceam_out.output.froz.isp(3:length(ceam_out.output.froz.isp)), ...
